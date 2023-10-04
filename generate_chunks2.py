@@ -6,6 +6,7 @@ import pandas as pd
 import sys
 import psutil
 import os
+import gc
 
 FILENAME = "MetroPT2.csv"
 
@@ -57,10 +58,12 @@ final_metro.reset_index(drop=True, inplace=True)
 analog_sensors = ['TP2', 'TP3', 'H1', 'DV_pressure', 'Reservoirs',
                   'Oil_temperature', 'Flowmeter', 'Motor_current']
 
+
+
 print("Read dataset")
 
 chunks, chunk_dates = generate_chunks(final_metro, 1800, 60, analog_sensors)
-
+final_metro = None
 print("Calculated chunks")
 print_memory_usage()
 
@@ -68,34 +71,35 @@ print_memory_usage()
 scaler = StandardScaler()
 print("scaler init")
 
-# Fit the scaler on the entire dataset
-all_data = np.concatenate(chunks, axis=0)
-scaler.fit(all_data)
-print("Fitted scaler on entire dataset")
+# Incrementally fit the scaler on each chunk
+for chunk in chunks:
+    scaler.partial_fit(chunk)
+    print("Partial fit done")
+    print_memory_usage()
+print("Fitted scaler on entire dataset incrementally")
 
-# Transform each chunk
-scaled_chunks_list = [scaler.transform(chunk) for chunk in chunks]
-scaled_chunks = np.array(scaled_chunks_list)
-print("Finished scaling chunks")
+# Process each chunk individually and write to disk immediately
+with open("data/training_chunks.pkl", "wb") as train_file, \
+     open("data/test_chunks.pkl", "wb") as test_file, \
+     open("data/training_chunk_dates.pkl", "wb") as train_dates_file, \
+     open("data/test_chunk_dates.pkl", "wb") as test_dates_file:
 
-training_chunks = th.tensor(chunks[np.where(chunk_dates[:, 1] < np.datetime64("2022-06-01T00:00:00.000000000"))[0]])
-test_chunks = th.tensor(chunks[np.where(chunk_dates[:, 0] >= np.datetime64("2022-06-01T00:00:00.000000000"))[0]])
+    for i, (chunk, date) in enumerate(zip(chunks, chunk_dates)):
+        scaled_chunk = scaler.transform(chunk)
+        if date[1] < np.datetime64("2022-06-01T00:00:00.000000000"):
+            pkl.dump(scaled_chunk, train_file)
+            pkl.dump(date, train_dates_file)
+        else:
+            pkl.dump(scaled_chunk, test_file)
+            pkl.dump(date, test_dates_file)
+        print(f"Processed and saved chunk {i+1}/{len(chunks)}")
+        print_memory_usage()
 
-print("Separated into training and test")
+        # Explicitly delete the chunk and date to free up memory
+        del chunk
+        del date
 
-training_chunk_dates = chunk_dates[np.where(chunk_dates[:,1] < np.datetime64("2022-06-01T00:00:00.000000000"))[0]]
-test_chunk_dates = chunk_dates[np.where(chunk_dates[:,0] >= np.datetime64("2022-06-01T00:00:00.000000000"))[0]]
-
-with open("data/training_chunk_dates.pkl", "wb") as pklfile:
-    pkl.dump(training_chunk_dates, pklfile)
-
-with open("data/test_chunk_dates.pkl", "wb") as pklfile:
-    pkl.dump(test_chunk_dates, pklfile)
-
-with open("data/training_chunks.pkl", "wb") as pklfile:
-    pkl.dump(training_chunks, pklfile)
-
-with open("data/test_chunks.pkl", "wb") as pklfile:
-    pkl.dump(test_chunks, pklfile)
+        # Manually run the garbage collector
+        gc.collect()
 
 print("Finished saving")
