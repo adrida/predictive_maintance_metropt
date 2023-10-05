@@ -65,6 +65,7 @@ class Encoder_TCN(nn.Module):
                                       out_features=embedding_dim)
 
     def forward(self, x):
+        print("Shape x permute",x.shape)
         x = x.permute(0, 2, 1)
 
         for layer in self.TCN_layers:

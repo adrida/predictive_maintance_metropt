@@ -15,7 +15,6 @@ from models.LSTM_SAE import LSTM_SAE
 from models.TCN_AE import TCN_AE
 from models.TCN_AAE import Encoder_TCN, Decoder_TCN, SimpleDiscriminator_TCN, LSTMDiscriminator_TCN, ConvDiscriminator_TCN
 
-
 class ChunkDataset(Dataset):
     def __init__(self, data_location):
         with open(data_location, "rb") as pklfile:
@@ -25,7 +24,11 @@ class ChunkDataset(Dataset):
         return self.data.shape[0]
 
     def __getitem__(self, ind):
-        return self.data[ind, :, :].float()
+        print("SHAPE:" ,self.data.shape)
+
+        return th.tensor(self.data[ind, :,:]).float()
+
+        
 
 
 ####################
