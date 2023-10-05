@@ -92,6 +92,7 @@ def map_cycles_to_intervals(interval_list, chunk_dates):
     return list(map(lambda x: np.where([x.overlaps(i) for i in cycles_dates])[0], interval_list))
 
 
+
 train_chunks_to_intervals = map_cycles_to_intervals(train_intervals, training_chunk_dates)
 test_chunks_to_intervals = map_cycles_to_intervals(test_intervals, test_chunk_dates)
 
