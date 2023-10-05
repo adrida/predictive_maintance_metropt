@@ -7,6 +7,9 @@ import torch.nn.functional as F
 from torch.distributions.multivariate_normal import MultivariateNormal
 import pickle as pkl
 import tqdm
+import os
+os.environ["USE_NNPACK"] = "0"
+
 from ArgumentParser import parse_arguments
 from models.LSTM_AAE import Encoder, Decoder, SimpleDiscriminator, LSTMDiscriminator, ConvDiscriminator
 from torch.utils.data import Dataset, DataLoader
@@ -27,6 +30,7 @@ class ChunkDataset(Dataset):
 
     def __getitem__(self, ind):
         print("SHAPE:" ,self.data.shape)
+        # breakpoint()
 
         return th.tensor(self.data[ind]).float()
 
@@ -62,6 +66,7 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
         for train_batch in tqdm_epoch:
+            breakpoint()
             tqdm_epoch.set_description(f"Discriminator Epoch {epoch + 1}")
             optimizer_discriminator.zero_grad()
             train_batch = train_batch.to(args.device)
