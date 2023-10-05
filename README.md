@@ -14,16 +14,11 @@ Download dataset: https://zenodo.org/record/7766691
 `python3 train_chunks.py -encoder TCN -decoder TCN -use_discriminator -model LSTMDiscriminator_TCN -epochs 150 -lr 1e-3 -batch_size 64 -feats analog`
 
 
-usage: train_chunks.py [-h] [-lr LR] [-disc_lr DISC_LR] [-epochs EPOCHS] [-l2reg WEIGHT_DECAY] [-critic_iterations CRITIC_ITERATIONS] [-gradient_penalty GP_HYPERPARAM]
-                       [-WAEreg WAE_REGULARIZATION_TERM] [-dropout DROPOUT] [-embedding EMBEDDING] [-hidden HIDDEN_DIMS] [-n_layers LSTM_LAYERS] [-batch_size BATCH_SIZE]
-                       [-disc_hidden DISC_HIDDEN] [-disc_layers DISC_LAYERS] [-tcn_hidden TCN_HIDDEN] [-tcn_layers TCN_LAYERS] [-tcn_kernel TCN_KERNEL] [-sw SPARSITY_WEIGHT]
-                       [-sp SPARSITY_PARAMETER] [-att_heads NHEADS] [-feats {analog,digital,all,noflow}] [-SI SUCCESSIVE_ITERS] [-delta_worse DELTA_WORSE]
-                       [-delta_better DELTA_BETTER] -model
-                       {lstm_ae,lstm_sae,multi_enc_sae,multi_enc_ae,lstm_all_layer_sae,diff_comp_sae,diff_comp_ae,GAN,SimpleDiscriminator,LSTMDiscriminator,ConvDiscriminator,tcn_ae,alt_lstm_ae,SimpleDiscriminator_TCN,LSTMDiscriminator_TCN,ConvDiscriminator_TCN}
-                       [-encoder {LSTM,TCN}] [-decoder {LSTM,TCN}] [-recons_error {dtw,mse}] [-dtw_local DTW_LOCAL_SIZE] [-separate_comp] [-init INIT_LOOP] [-end END_LOOP]
-                       [-force-training] [-sensor SENSOR] [-train_tensor TRAIN_TENSOR] [-test_tensor TEST_TENSOR] [-use_discriminator]
-train_chunks.py: error: argument -model: invalid choice: 'wagwan' (choose from 'lstm_ae', 'lstm_sae', 'multi_enc_sae', 'multi_enc_ae', 'lstm_all_layer_sae', 'diff_comp_sae', 'diff_comp_ae', 'GAN', 'SimpleDiscriminator', 'LSTMDiscriminator', 'ConvDiscriminator', 'tcn_ae', 'alt_lstm_ae', 'SimpleDiscriminator_TCN', 'LSTMDiscriminator_TCN', 'ConvDiscriminator_TCN')
+usage: train_chunks.py [-h] [-lr LR] [-disc_lr DISC_LR] [-epochs EPOCHS] [-l2reg WEIGHT_DECAY] [-critic_iterations CRITIC_ITERATIONS] [-gradient_penalty GP_HYPERPARAM] [-WAEreg WAE_REGULARIZATION_TERM] [-dropout DROPOUT] [-embedding EMBEDDING] [-hidden HIDDEN_DIMS] [-n_layers LSTM_LAYERS] [-batch_size BATCH_SIZE] [-disc_hidden DISC_HIDDEN] [-disc_layers DISC_LAYERS] [-tcn_hidden TCN_HIDDEN] [-tcn_layers TCN_LAYERS] [-tcn_kernel TCN_KERNEL] [-sw SPARSITY_WEIGHT] [-sp SPARSITY_PARAMETER] [-att_heads NHEADS] [-feats {analog,digital,all,noflow}] [-SI SUCCESSIVE_ITERS] [-delta_worse DELTA_WORSE] [-delta_better DELTA_BETTER] -model
 
+{lstm_ae,lstm_sae,multi_enc_sae,multi_enc_ae,lstm_all_layer_sae,diff_comp_sae,diff_comp_ae,GAN,SimpleDiscriminator,LSTMDiscriminator,ConvDiscriminator,tcn_ae,alt_lstm_ae,SimpleDiscriminator_TCN,LSTMDiscriminator_TCN,ConvDiscriminator_TCN} [-encoder {LSTM,TCN}] [-decoder {LSTM,TCN}] [-recons_error {dtw,mse}] [-dtw_local DTW_LOCAL_SIZE] [-separate_comp] [-init INIT_LOOP] [-end END_LOOP] [-force-training] [-sensor SENSOR] [-train_tensor TRAIN_TENSOR] [-test_tensor TEST_TENSOR] [-use_discriminator] train_chunks.py: error: argument -model: invalid choice: 'wagwan' (choose from 'lstm_ae', 'lstm_sae', 'multi_enc_sae', 'multi_enc_ae', 'lstm_all_layer_sae', 'diff_comp_sae', 'diff_comp_ae', 'GAN', 'SimpleDiscriminator', 'LSTMDiscriminator', 'ConvDiscriminator', 'tcn_ae', 'alt_lstm_ae', 'SimpleDiscriminator_TCN', 'LSTMDiscriminator_TCN', 'ConvDiscriminator_TCN')
+               
+                       
 ### Suggested configuration from the paper:
 Considering the challenges faced by our proposed models to identify failures without false alarms when using compressor cycles as the input data, we change our focus towards detecting failures in the input stream by considering chunks of data spanning 30 minutes. As before, we train our models on the first month of data, which is assumed to be a normal period, and test on the following two months. We use the same optimizer to train the models, Adam [14], and batch sizes of 64. After hyperparameter tuning, the following architectures yielded the top F1 scores:
 
