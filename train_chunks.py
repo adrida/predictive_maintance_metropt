@@ -19,6 +19,8 @@ class ChunkDataset(Dataset):
     def __init__(self, data_location):
         with open(data_location, "rb") as pklfile:
             self.data = pkl.load(pklfile)
+            self.data = self.data.reshape(-1, 1800, self.data.shape[-1])
+
 
     def __len__(self):
         return self.data.shape[0]
@@ -26,7 +28,8 @@ class ChunkDataset(Dataset):
     def __getitem__(self, ind):
         print("SHAPE:" ,self.data.shape)
 
-        return th.tensor(self.data[ind, :,:]).float()
+        return th.tensor(self.data[ind]).float()
+
 
         
 
