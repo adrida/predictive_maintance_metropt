@@ -7,6 +7,10 @@ https://www.researchgate.net/publication/373987684_Predictive_Maintenance_Advers
 
 Download dataset: https://zenodo.org/record/7766691
 
+### Libraries
+
+`pip install -r requirements.txt`
+
 ### Step 1: Generate processing data:
 
 `python generate_chunks.py`
