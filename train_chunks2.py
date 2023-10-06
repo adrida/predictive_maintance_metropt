@@ -7,6 +7,9 @@ import torch.nn.functional as F
 from torch.distributions.multivariate_normal import MultivariateNormal
 import pickle as pkl
 import tqdm
+import os
+os.environ["USE_NNPACK"] = "0"
+
 from ArgumentParser import parse_arguments
 from models.LSTM_AAE import Encoder, Decoder, SimpleDiscriminator, LSTMDiscriminator, ConvDiscriminator
 from torch.utils.data import Dataset, DataLoader
@@ -15,17 +18,24 @@ from models.LSTM_SAE import LSTM_SAE
 from models.TCN_AE import TCN_AE
 from models.TCN_AAE import Encoder_TCN, Decoder_TCN, SimpleDiscriminator_TCN, LSTMDiscriminator_TCN, ConvDiscriminator_TCN
 
-
 class ChunkDataset(Dataset):
     def __init__(self, data_location):
         with open(data_location, "rb") as pklfile:
             self.data = pkl.load(pklfile)
+            self.data = self.data.reshape(-1, 1800, self.data.shape[-1])
+
 
     def __len__(self):
         return self.data.shape[0]
 
     def __getitem__(self, ind):
-        return self.data[ind, :, :].float()
+        print("SHAPE:" ,self.data.shape)
+        # breakpoint()
+
+        return th.tensor(self.data[ind]).float()
+
+
+        
 
 
 ####################
@@ -56,6 +66,7 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
         for train_batch in tqdm_epoch:
+            breakpoint()
             tqdm_epoch.set_description(f"Discriminator Epoch {epoch + 1}")
             optimizer_discriminator.zero_grad()
             train_batch = train_batch.to(args.device)

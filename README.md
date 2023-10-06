@@ -11,10 +11,9 @@ Download dataset: https://zenodo.org/record/7766691
 `python generate_chunks.py`
 
 ### Step 3: Run training:
-`python3 train_chunks.py -encoder TCN -decoder TCN -use_discriminator -model LSTMDiscriminator_TCN -epochs 150 -lr 1e-3 -batch_size 64 -feats analog`
 
 python train_chunks.py \
--model SimpleDiscriminator_TCN \
+-model LSTMDiscriminator_TCN \
 -encoder TCN \
 -decoder TCN \
 -tcn_hidden 30 \
@@ -26,6 +25,18 @@ python train_chunks.py \
 -lr 1e-3 \
 -disc_lr 1e-3 \
 -use_discriminator
+
+
+`python3 train_chunks.py -encoder TCN -decoder TCN -use_discriminator -model LSTMDiscriminator_TCN -epochs 150 -lr 1e-3 -batch_size 64 -feats analog`
+
+### Step 4: Run failure detection expe:
+
+Change file namnes with savec pickle reconstruction losses in folder `results`
+
+run `python3 failure_detection.py` 
+
+if it doesn't work try: `python3 failure_detection.py analog` 
+
 
 usage: train_chunks.py [-h] [-lr LR] [-disc_lr DISC_LR] [-epochs EPOCHS] [-l2reg WEIGHT_DECAY] [-critic_iterations CRITIC_ITERATIONS] [-gradient_penalty GP_HYPERPARAM] [-WAEreg WAE_REGULARIZATION_TERM] [-dropout DROPOUT] [-embedding EMBEDDING] [-hidden HIDDEN_DIMS] [-n_layers LSTM_LAYERS] [-batch_size BATCH_SIZE] [-disc_hidden DISC_HIDDEN] [-disc_layers DISC_LAYERS] [-tcn_hidden TCN_HIDDEN] [-tcn_layers TCN_LAYERS] [-tcn_kernel TCN_KERNEL] [-sw SPARSITY_WEIGHT] [-sp SPARSITY_PARAMETER] [-att_heads NHEADS] [-feats {analog,digital,all,noflow}] [-SI SUCCESSIVE_ITERS] [-delta_worse DELTA_WORSE] [-delta_better DELTA_BETTER] -model
 

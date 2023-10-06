@@ -82,14 +82,25 @@ with open("data/training_chunk_dates.pkl", "rb") as chunk_dates_file:
 with open("data/test_chunk_dates.pkl", "rb") as chunk_dates_file:
     test_chunk_dates = pkl.load(chunk_dates_file)
 
+# Ensure the first and last elements are tuples before extracting timestamps
+start_timestamp = pd.Timestamp(training_chunk_dates[0][0]) if isinstance(training_chunk_dates[0], tuple) else pd.Timestamp(training_chunk_dates[0])
+end_timestamp = pd.Timestamp(training_chunk_dates[-1][0]) if isinstance(training_chunk_dates[-1], tuple) else pd.Timestamp(training_chunk_dates[-1])
 
-train_intervals = generate_intervals({"minutes": 5}, pd.Timestamp(training_chunk_dates[0][0]), pd.Timestamp(training_chunk_dates[-1][0]))
-test_intervals = generate_intervals({"minutes": 5}, pd.Timestamp(test_chunk_dates[0][0]), pd.Timestamp(test_chunk_dates[-1][0]))
+train_intervals = generate_intervals({"minutes": 5}, start_timestamp, end_timestamp)
 
+test_intervals = generate_intervals({"minutes": 5},  start_timestamp, end_timestamp)
 
 def map_cycles_to_intervals(interval_list, chunk_dates):
-    cycles_dates = list(map(lambda x: pd.Interval(pd.Timestamp(x[0]), pd.Timestamp(x[1]), closed="both"), chunk_dates))
+    # Handle both tuples and scalar values in chunk_dates
+    def create_interval(x):
+        if isinstance(x, tuple):
+            return pd.Interval(pd.Timestamp(x[0]), pd.Timestamp(x[1]), closed="both")
+        else:
+            return pd.Interval(pd.Timestamp(x), pd.Timestamp(x), closed="both")
+
+    cycles_dates = list(map(create_interval, chunk_dates))
     return list(map(lambda x: np.where([x.overlaps(i) for i in cycles_dates])[0], interval_list))
+
 
 
 train_chunks_to_intervals = map_cycles_to_intervals(train_intervals, training_chunk_dates)
@@ -97,8 +108,10 @@ test_chunks_to_intervals = map_cycles_to_intervals(test_intervals, test_chunk_da
 
 alpha = 0.05
 
-with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_TCN_analog_feats_4_10_30_3_10.0_3_32_150_0.001_0.001_64.pkl", "rb") as loss_file:
+# with open("results/final_chunks_complete_losses_WAE_SimpleDiscriminator_TCN_analog_feats_4_2_30_3_1.0_3_32_150_0.001_0.001_32.pkl", "rb") as loss_file:
+with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_TCN_analog_feats_4_2_30_3_1.0_3_32_150_0.001_0.001_32.pkl", "rb") as loss_file:
     tl = pkl.load(loss_file)
+    breakpoint()
     test_losses = tl["test"]
     train_losses = tl["train"]
 
@@ -121,45 +134,49 @@ wae_gan_output = np.array(simple_lowpass_filter(binary_output,alpha))
 
 print_failures(test_intervals, wae_gan_output)
 
-with open("results/final_chunks_complete_losses_AE_tcn_ae_analog_feats_4_8_6_7_100_0.001_64.pkl", "rb") as loss_file:
-    tl = pkl.load(loss_file)
-    test_losses = tl["test"]
-    train_losses = tl["train"]
+# with open("results/final_chunks_offline_losses_WAE_LSTMDiscriminator_TCN_analog_feats_4_2_30_3_1.0_3_32_150_0.001_0.001_32.pkl", "rb") as loss_file:
+#     tl = pkl.load(loss_file)
+#     test_losses = tl["test"]
+#     train_losses = tl["train"]
 
 
-median_train_losses = np.array(
-    [np.median(np.array(train_losses)[tc]) for tc in train_chunks_to_intervals if len(tc) > 0])
-median_test_losses = np.array([np.median(np.array(test_losses)[tc]) for tc in test_chunks_to_intervals if len(tc) > 0])
+# median_train_losses = np.array(
+#     [np.median(np.array(train_losses)[tc]) for tc in train_chunks_to_intervals if len(tc) > 0])
+# median_test_losses = np.array([np.median(np.array(test_losses)[tc]) for tc in test_chunks_to_intervals if len(tc) > 0])
 
-date_output_test = [interval.left for i, interval in enumerate(test_intervals) if len(test_chunks_to_intervals[i]) > 0]
-date_output_train = [interval.left for i, interval in enumerate(train_intervals) if
-                     len(train_chunks_to_intervals[i]) > 0]
+# date_output_test = [interval.left for i, interval in enumerate(test_intervals) if len(test_chunks_to_intervals[i]) > 0]
+# date_output_train = [interval.left for i, interval in enumerate(train_intervals) if
+#                      len(train_chunks_to_intervals[i]) > 0]
 
-anomaly_threshold = extreme_anomaly(median_train_losses)
+# anomaly_threshold = extreme_anomaly(median_train_losses)
 
-binary_output = np.array(np.array(median_test_losses) > anomaly_threshold, dtype=int)
+# binary_output = np.array(np.array(median_test_losses) > anomaly_threshold, dtype=int)
 
-tcn_output = np.array(simple_lowpass_filter(binary_output, 0.03))
+# tcn_output = np.array(simple_lowpass_filter(binary_output, 0.03))
 
-print_failures(test_intervals, tcn_output)
+# print_failures(test_intervals, tcn_output)
 
-with open("results/final_chunks_complete_losses_AE_lstm_ae_analog_feats_4_5_150_0.001_64.pkl", "rb") as loss_file:
-    tl = pkl.load(loss_file)
-    test_losses = tl["test"]
-    train_losses = tl["train"]
+# with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_TCN_analog_feats_4_2_30_3_1.0_3_32_150_0.001_0.001_32.pkl", "rb") as loss_file:
+#     tl = pkl.load(loss_file)
+#     # breakpoint()
+#     test_losses = tl["test"]
+#     train_losses = tl["train"]
 
-median_train_losses = np.array(
-    [np.median(np.array(train_losses)[tc]) for tc in train_chunks_to_intervals if len(tc) > 0])
-median_test_losses = np.array([np.median(np.array(test_losses)[tc]) for tc in test_chunks_to_intervals if len(tc) > 0])
+# breakpoint()
+# median_train_losses = train_losses["reconstruction"]
+# median_test_losses = test_losses["reconstruction"]
+# median_train_losses = np.array(
+#     [np.median(np.array(train_losses)[tc]) for tc in train_chunks_to_intervals if len(tc) > 0])
+# median_test_losses = np.array([np.median(np.array(test_losses)[tc]) for tc in test_chunks_to_intervals if len(tc) > 0])
 
-date_output_test = [interval.left for i, interval in enumerate(test_intervals) if len(test_chunks_to_intervals[i]) > 0]
-date_output_train = [interval.left for i, interval in enumerate(train_intervals) if
-                     len(train_chunks_to_intervals[i]) > 0]
+# date_output_test = [interval.left for i, interval in enumerate(test_intervals) if len(test_chunks_to_intervals[i]) > 0]
+# date_output_train = [interval.left for i, interval in enumerate(train_intervals) if
+#                      len(train_chunks_to_intervals[i]) > 0]
 
-anomaly_threshold = extreme_anomaly(median_train_losses)
+# anomaly_threshold = extreme_anomaly(median_train_losses)
 
-binary_output = np.array(np.array(median_test_losses) > anomaly_threshold, dtype=int)
+# binary_output = np.array(np.array(median_test_losses) > anomaly_threshold, dtype=int)
 
-lstm_output = np.array(simple_lowpass_filter(binary_output, 0.05))
+# lstm_output = np.array(simple_lowpass_filter(binary_output, 0.05))
 
-print_failures(test_intervals, lstm_output)
+# print_failures(test_intervals, lstm_output)

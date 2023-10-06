@@ -4,14 +4,6 @@ import torch as th
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 import sys
-import psutil
-import os
-
-FILENAME = "MetroPT2.csv"
-def print_memory_usage():
-    process = psutil.Process(os.getpid())
-    memory_MB = process.memory_info().rss / (1024 ** 2)  # Convert bytes to MB
-    print(f"Current memory usage: {memory_MB:.2f} MB")
 
 def generate_chunks(df, chunk_size, chunk_stride, cols):
 
@@ -42,9 +34,7 @@ def generate_chunks(df, chunk_size, chunk_stride, cols):
     return c, np.concatenate(window_start_date)
 
 
-final_metro = pd.read_csv(FILENAME)
-print_memory_usage()
-
+final_metro = pd.read_csv(sys.argv[1])
 correct_cols = ['TP2', 'TP3', 'H1', 'DV_pressure', 'Reservoirs',
                 'Oil_temperature', 'Flowmeter', 'Motor_current','COMP', 'DV_eletric',
                 'Towers', 'MPG', 'LPS', 'Pressure_switch', 'Oil_level', 'Caudal_impulses']
@@ -64,26 +54,10 @@ print("Read dataset")
 
 chunks, chunk_dates = generate_chunks(final_metro, 1800, 60, analog_sensors)
 
-
 print("Calculated chunks")
-print_memory_usage()
 
 scaler = StandardScaler()
-print_memory_usage()
-print("scaler init")
-# try:
-scaled_chunks_list = []
-for i, chunk in enumerate(chunks):
-    scaled_chunk = scaler.fit_transform(chunk)
-    scaled_chunks_list.append(scaled_chunk)
-    print(f"Finished scaling chunk {i+1}/{len(chunks)}")
-    print_memory_usage()
-print_memory_usage()
-
-scaled_chunks = np.array(scaled_chunks_list)
-
-# except:
-#     breakpoint()
+scaled_chunks = np.array(list(map(lambda x: scaler.fit_transform(x), chunks)))
 
 print("Finished scaling")
 
