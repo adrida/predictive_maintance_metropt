@@ -36,7 +36,7 @@ python train_chunks.py \
 
 ### Step 4: Run failure detection expe:
 
-Change file namnes with savec pickle reconstruction losses in folder `results`
+Change in `failure_detection.py` file names with saved pickle reconstruction losses (files to import will be located in in folder `results`)
 
 run `python3 failure_detection.py` 
 
