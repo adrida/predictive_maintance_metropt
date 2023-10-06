@@ -1,6 +1,6 @@
 # metro-anomaly-ECML2023
 
-Reproduction the experiments in the paper:
+Reproduction of the experiments in the paper:
 https://www.researchgate.net/publication/373987684_Predictive_Maintenance_Adversarial_Autoencoders_and_Explainability
 
 ## Trial to replicate results and reproduce training
