@@ -1,6 +1,7 @@
 # metro-anomaly-ECML2023
 
-Repository to store code necessary to reproduce the experiments in the paper
+Reproduction the experiments in the paper:
+https://www.researchgate.net/publication/373987684_Predictive_Maintenance_Adversarial_Autoencoders_and_Explainability
 
 ## Trial to replicate results and reproduce training
 
