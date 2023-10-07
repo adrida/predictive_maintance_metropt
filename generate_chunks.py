@@ -36,6 +36,7 @@ def generate_chunks(df, chunk_size, chunk_stride, cols):
     return c, np.concatenate(window_start_date)
 
 final_metro = pd.read_csv(FILENAME)
+print("Read file")
 correct_cols = ['TP2', 'TP3', 'H1', 'DV_pressure', 'Reservoirs',
                 'Oil_temperature', 'Flowmeter', 'Motor_current','COMP', 'DV_eletric',
                 'Towers', 'MPG', 'LPS', 'Pressure_switch', 'Oil_level', 'Caudal_impulses']
