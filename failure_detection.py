@@ -77,6 +77,8 @@ def generate_intervals(granularity, start_timestamp, end_timestamp):
 
 def map_cycles_to_intervals(interval_list, chunk_dates):
     cycles_dates = list(map(lambda x: pd.Interval(pd.Timestamp(x[0]), pd.Timestamp(x[1]), closed="both"), chunk_dates))
+    
+    
     return list(map(lambda x: np.where([x.overlaps(i) for i in cycles_dates])[0], interval_list))
 
 print("Starting to read data")
@@ -127,6 +129,7 @@ wae_gan_output = np.array(simple_lowpass_filter(binary_output,alpha))
 
 print("Output consutrcuted... Loading failures detected")
 print_failures(test_intervals, wae_gan_output)
+breakpoint()
 
 # with open("results/final_chunks_complete_losses_AE_tcn_ae_analog_feats_4_8_6_7_100_0.001_64.pkl", "rb") as loss_file:
 #     tl = pkl.load(loss_file)
