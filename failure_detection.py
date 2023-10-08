@@ -90,8 +90,8 @@ with open("data/test_chunk_dates.pkl", "rb") as chunk_dates_file:
     test_chunk_dates = pkl.load(chunk_dates_file)
 
 print("Data read")
-train_intervals = generate_intervals({"minutes": 5}, pd.Timestamp(training_chunk_dates[0][0]), pd.Timestamp(training_chunk_dates[-1][0]))
-test_intervals = generate_intervals({"minutes": 5}, pd.Timestamp(test_chunk_dates[0][0]), pd.Timestamp(test_chunk_dates[-1][0]))
+train_intervals = generate_intervals({"minutes": 30}, pd.Timestamp(training_chunk_dates[0][0]), pd.Timestamp(training_chunk_dates[-1][0]))
+test_intervals = generate_intervals({"minutes": 30}, pd.Timestamp(test_chunk_dates[0][0]), pd.Timestamp(test_chunk_dates[-1][0]))
 
 print("intervals generated")
 
