@@ -303,8 +303,8 @@ def load_parameters(arguments):
         train_set = ChunkDataset("data/training_chunks.pkl")
         test_set = ChunkDataset("data/test_chunks.pkl")
 
-    arguments.train_dataloader = DataLoader(train_set, batch_size=arguments.BATCH_SIZE, shuffle=True)
-    breakpoint()
+    arguments.train_dataloader = DataLoader(train_set, batch_size=arguments.BATCH_SIZE, shuffle=True).
+    # breakpoint()
     arguments.train_scores = DataLoader(train_set, batch_size=1, shuffle=False)
     arguments.test_dataloader = DataLoader(test_set, batch_size=1, shuffle=False)
 
@@ -362,7 +362,7 @@ def load_parameters(arguments):
                                                                kernel_size=arguments.tcn_kernel,
                                                                # Window for input size
                                                                window_size=1800).to(arguments.device)
-        breakpoint()
+        # breakpoint()
     else:
         MODELS = {"lstm_ae": LSTM_AE, "lstm_sae": LSTM_SAE, "tcn_ae": TCN_AE}
 
@@ -388,7 +388,7 @@ def load_parameters(arguments):
 
 def main(arguments):
 
-    breakpoint()
+    # breakpoint()
     if arguments.use_discriminator:
         models_exist = all([os.path.exists(arguments.model_saving_string(model)) for model in ["WAE_encoder",
                                                                                                "WAE_decoder",
