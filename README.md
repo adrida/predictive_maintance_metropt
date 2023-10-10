@@ -18,7 +18,8 @@ Download dataset: https://zenodo.org/record/7766691
 ### Step 3: Run training:
 
 python train_chunks.py \
--model LSTMDiscriminator_TCN \
+#-model LSTMDiscriminator_TCN \
+-model LSTMDiscriminator \
 -encoder TCN \
 -decoder TCN \
 -tcn_hidden 30 \

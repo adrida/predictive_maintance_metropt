@@ -86,6 +86,7 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
 
 
 def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
+    
 
     free_params(args.encoder)
     free_params(args.decoder)
@@ -94,6 +95,7 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
         for i, train_batch in enumerate(tqdm_epoch):
+
             tqdm_epoch.set_description(f"Encoder/Decoder Epoch {epoch + 1}")
             optimizer_encoder.zero_grad()
             optimizer_decoder.zero_grad()
@@ -287,7 +289,9 @@ def load_parameters(arguments):
     arguments.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
 
     arguments.FEATS = f"{arguments.FEATS}_feats"
-    arguments.NUMBER_FEATURES = FEATS_TO_NUMBER[arguments.FEATS]
+    # arguments.NUMBER_FEATURES = FEATS_TO_NUMBER[arguments.FEATS]
+    # TAKE ALL FEATURES AS INPUT
+    arguments.NUMBER_FEATURES = 16
 
     arguments.results_folder = "results/"
     arguments.data_folder = "data/"
@@ -300,6 +304,7 @@ def load_parameters(arguments):
         test_set = ChunkDataset("data/test_chunks.pkl")
 
     arguments.train_dataloader = DataLoader(train_set, batch_size=arguments.BATCH_SIZE, shuffle=True)
+    breakpoint()
     arguments.train_scores = DataLoader(train_set, batch_size=1, shuffle=False)
     arguments.test_dataloader = DataLoader(test_set, batch_size=1, shuffle=False)
 
@@ -333,11 +338,7 @@ def load_parameters(arguments):
         decoders = dict(LSTM=Decoder,
                         TCN=Decoder_TCN)
 
-        arguments.decoder = decoders[arguments.DECODER_NAME](arguments.EMBEDDING,
-                                                             arguments.NUMBER_FEATURES,
-                                                             arguments.DROPOUT,
-                                                             arguments.LSTM_LAYERS,
-                                                             hidden_dim=arguments.tcn_hidden,
+        arguments.decoder = decoders[arguments.DECODER_NAME](arguments.EMBEDDING,arguments.NUMBER_FEATURES,arguments.DROPOUT,arguments.LSTM_LAYERS,hidden_dim=arguments.tcn_hidden,
                                                              kernel_size=arguments.tcn_kernel).to(arguments.device)
 
         arguments.encoder = encoders[arguments.ENCODER_NAME](arguments.NUMBER_FEATURES,
@@ -359,8 +360,9 @@ def load_parameters(arguments):
                                                                n_layers=arguments.disc_layers,
                                                                disc_hidden=arguments.disc_hidden,
                                                                kernel_size=arguments.tcn_kernel,
+                                                               # Window for input size
                                                                window_size=1800).to(arguments.device)
-
+        breakpoint()
     else:
         MODELS = {"lstm_ae": LSTM_AE, "lstm_sae": LSTM_SAE, "tcn_ae": TCN_AE}
 
@@ -386,6 +388,7 @@ def load_parameters(arguments):
 
 def main(arguments):
 
+    breakpoint()
     if arguments.use_discriminator:
         models_exist = all([os.path.exists(arguments.model_saving_string(model)) for model in ["WAE_encoder",
                                                                                                "WAE_decoder",
