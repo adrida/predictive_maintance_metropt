@@ -126,9 +126,11 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
                 breakpoint()
 
             discriminator_loss = args.WAE_regularization_term * (th.log(discriminator_real_latent))
+            try:
 
-            loss = th.mean(reconstruction_loss - discriminator_loss)
-
+                loss = th.mean(reconstruction_loss - discriminator_loss)
+            except:
+                breakpoint()
             loss.backward()
 
             nn.utils.clip_grad_norm_(args.encoder.parameters(), 1)
