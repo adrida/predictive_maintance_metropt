@@ -92,8 +92,8 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
 
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
-        for i, train_batch in enumerate(tqdm_epoch):
 
+        for i, train_batch in enumerate(tqdm_epoch):
             tqdm_epoch.set_description(f"Encoder/Decoder Epoch {epoch + 1}")
             optimizer_encoder.zero_grad()
             optimizer_decoder.zero_grad()
@@ -124,6 +124,8 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
             optimizer_encoder.step()
             optimizer_decoder.step()
             losses.append(loss.item())
+        print("CLEARING CACHE")
+        th.cuda.empty_cache()
 
     return losses
 
