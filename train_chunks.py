@@ -88,7 +88,10 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
 
 
 def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
-    
+    print("CLEARING CACHE")
+    th.cuda.empty_cache()
+    th.cuda.memory_summary(device=None, abbreviated=False)
+
 
     free_params(args.encoder)
     free_params(args.decoder)
