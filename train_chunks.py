@@ -54,8 +54,9 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
 
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
+        th.cuda.empty_cache()
         for train_batch in tqdm_epoch:
-            th.cuda.empty_cache()
+            
             tqdm_epoch.set_description(f"Discriminator Epoch {epoch + 1}")
             optimizer_discriminator.zero_grad()
             train_batch = train_batch.to(args.device)
@@ -79,6 +80,9 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
             nn.utils.clip_grad_norm_(args.discriminator.parameters(), 1)
             optimizer_discriminator.step()
             losses.append(loss.item())
+        th.cuda.empty_cache()
+        th.cuda.memory_summary(device=None, abbreviated=False)
+
 
     return losses
 
@@ -126,6 +130,8 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
             losses.append(loss.item())
         print("CLEARING CACHE")
         th.cuda.empty_cache()
+        th.cuda.memory_summary(device=None, abbreviated=False)
+
 
     return losses
 
