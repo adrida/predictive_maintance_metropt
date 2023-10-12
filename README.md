@@ -30,7 +30,8 @@ python train_chunks.py \
 -epochs 150 \
 -lr 1e-3 \
 -disc_lr 1e-3 \
--use_discriminator
+-use_discriminator\
+-batch_size 15
 
 
 `python3 train_chunks.py -encoder TCN -decoder TCN -use_discriminator -model LSTMDiscriminator_TCN -epochs 150 -lr 1e-3 -batch_size 64 -feats analog`
