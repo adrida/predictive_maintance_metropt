@@ -115,8 +115,8 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
 
             discriminator_real_latent = args.discriminator(real_latent_space)
 
-            if "TCN" not in args.MODEL_NAME:
-                real_latent_space = real_latent_space.repeat(1, train_batch.shape[1], 1).to(args.device)
+            #if "TCN" not in args.MODEL_NAME:
+                #real_latent_space = real_latent_space.repeat(1, train_batch.shape[1], 1).to(args.device)
 
             reconstructed_input = args.decoder(real_latent_space)
             try:
