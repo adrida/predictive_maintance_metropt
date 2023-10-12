@@ -45,8 +45,11 @@ def frozen_params(module: nn.Module):
     for p in module.parameters():
         p.requires_grad = False
 
+import gc
 
 def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, args):
+    del variables
+    gc.collect()
 
     frozen_params(args.encoder)
     frozen_params(args.decoder)
@@ -89,6 +92,8 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
 
 def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
     print("CLEARING CACHE")
+    del variables
+    gc.collect()
     th.cuda.empty_cache()
     th.cuda.memory_summary(device=None, abbreviated=False)
 
@@ -99,6 +104,8 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
 
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
+        del variables
+        gc.collect()
 
         for i, train_batch in enumerate(tqdm_epoch):
             tqdm_epoch.set_description(f"Encoder/Decoder Epoch {epoch + 1}")
