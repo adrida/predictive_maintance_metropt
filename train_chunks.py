@@ -58,6 +58,7 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
         for train_batch in tqdm_epoch:
+            th.cuda.empty_cache()
             tqdm_epoch.set_description(f"Discriminator Epoch {epoch + 1}")
             optimizer_discriminator.zero_grad()
             train_batch = train_batch.to(args.device)
