@@ -102,7 +102,6 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
 
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
-        del variables
         gc.collect()
 
         for i, train_batch in enumerate(tqdm_epoch):
