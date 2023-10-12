@@ -289,9 +289,9 @@ def load_parameters(arguments):
     arguments.device = th.device('cuda' if th.cuda.is_available() else 'cpu')
 
     arguments.FEATS = f"{arguments.FEATS}_feats"
-    # arguments.NUMBER_FEATURES = FEATS_TO_NUMBER[arguments.FEATS]
+    arguments.NUMBER_FEATURES = FEATS_TO_NUMBER[arguments.FEATS]
     # TAKE ALL FEATURES AS INPUT
-    arguments.NUMBER_FEATURES = 16
+    # arguments.NUMBER_FEATURES = 16
 
     arguments.results_folder = "results/"
     arguments.data_folder = "data/"
@@ -303,7 +303,7 @@ def load_parameters(arguments):
         train_set = ChunkDataset("data/training_chunks.pkl")
         test_set = ChunkDataset("data/test_chunks.pkl")
 
-    arguments.train_dataloader = DataLoader(train_set, batch_size=arguments.BATCH_SIZE, shuffle=True).
+    arguments.train_dataloader = DataLoader(train_set, batch_size=arguments.BATCH_SIZE, shuffle=True)
     # breakpoint()
     arguments.train_scores = DataLoader(train_set, batch_size=1, shuffle=False)
     arguments.test_dataloader = DataLoader(test_set, batch_size=1, shuffle=False)
