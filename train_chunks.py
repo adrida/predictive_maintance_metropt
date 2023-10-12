@@ -120,8 +120,9 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
 
             reconstructed_input = args.decoder(real_latent_space)
             try:
-                reconstruction_loss = F.mse_loss(reconstructed_input, train_batch,
-                                             reduction="none").mean(dim=(1, 2)).reshape(-1, 1)
+                 reconstruction_loss = F.mse_loss(reconstructed_input, train_batch,reduction="none")
+                #reconstruction_loss = F.mse_loss(reconstructed_input, train_batch,
+                 #                            reduction="none").mean(dim=(1, 2)).reshape(-1, 1)
             except:
                 breakpoint()
 
