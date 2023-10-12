@@ -14,9 +14,6 @@ from models.LSTMAE import LSTM_AE
 from models.LSTM_SAE import LSTM_SAE
 from models.TCN_AE import TCN_AE
 from models.TCN_AAE import Encoder_TCN, Decoder_TCN, SimpleDiscriminator_TCN, LSTMDiscriminator_TCN, ConvDiscriminator_TCN
-# Disable NNPACK and set the backend to CPU
-th.backends.mkldnn.enabled = False
-th.backends.mkl.enabled = False
 
 class ChunkDataset(Dataset):
     def __init__(self, data_location):
