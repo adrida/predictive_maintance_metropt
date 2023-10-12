@@ -45,10 +45,9 @@ def frozen_params(module: nn.Module):
     for p in module.parameters():
         p.requires_grad = False
 
-import gc
 
 def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, args):
-    gc.collect()
+    #gc.collect()
 
     frozen_params(args.encoder)
     frozen_params(args.decoder)
@@ -56,7 +55,7 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
 
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
-        th.cuda.empty_cache()
+        #th.cuda.empty_cache()
         for train_batch in tqdm_epoch:
             
             tqdm_epoch.set_description(f"Discriminator Epoch {epoch + 1}")
@@ -82,8 +81,8 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
             nn.utils.clip_grad_norm_(args.discriminator.parameters(), 1)
             optimizer_discriminator.step()
             losses.append(loss.item())
-        th.cuda.empty_cache()
-        th.cuda.memory_summary(device=None, abbreviated=False)
+        #th.cuda.empty_cache()
+        # th.cuda.memory_summary(device=None, abbreviated=False)
 
 
     return losses
@@ -91,9 +90,9 @@ def train_discriminator(optimizer_discriminator, multivariate_normal, epoch, arg
 
 def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
     print("CLEARING CACHE")
-    gc.collect()
-    th.cuda.empty_cache()
-    th.cuda.memory_summary(device=None, abbreviated=False)
+    #gc.collect()
+    #th.cuda.empty_cache()
+    # th.cuda.memory_summary(device=None, abbreviated=False)
 
 
     free_params(args.encoder)
@@ -102,7 +101,7 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
 
     losses = []
     with tqdm.tqdm(args.train_dataloader, unit="batches") as tqdm_epoch:
-        gc.collect()
+        #gc.collect()
 
         for i, train_batch in enumerate(tqdm_epoch):
             tqdm_epoch.set_description(f"Encoder/Decoder Epoch {epoch + 1}")
@@ -136,8 +135,8 @@ def train_reconstruction(optimizer_encoder, optimizer_decoder, epoch, args):
             optimizer_decoder.step()
             losses.append(loss.item())
         print("CLEARING CACHE")
-        th.cuda.empty_cache()
-        th.cuda.memory_summary(device=None, abbreviated=False)
+        #th.cuda.empty_cache()
+        # th.cuda.memory_summary(device=None, abbreviated=False)
 
 
     return losses
