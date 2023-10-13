@@ -42,6 +42,8 @@ Change in `failure_detection.py` file names with saved pickle reconstruction los
 
 run `python3 failure_detection.py` 
 
+use alpha = 1
+
 if it doesn't work try: `python3 failure_detection.py analog` 
 
 
