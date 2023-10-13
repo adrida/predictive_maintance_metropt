@@ -102,7 +102,7 @@ test_chunks_to_intervals = map_cycles_to_intervals(test_intervals, test_chunk_da
 print("Mapped cycles to intervals")
 alpha = 0.05
 
-with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_TCN_analog_feats_4_2_30_3_1.0_3_32_150_0.001_0.001_32.pkl", "rb") as loss_file:
+with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_analog_feats_4_2_30_3_1.0_3_32_2_0.001_0.001_18.pkl", "rb") as loss_file:
     tl = pkl.load(loss_file)
     test_losses = tl["test"]
     train_losses = tl["train"]
