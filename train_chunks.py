@@ -218,8 +218,8 @@ def predict_gan(args, test_dataloader, tqdm_desc):
                 critic_score = th.mean(args.discriminator(latent_space))
                 critic_scores.append(critic_score.item())
 
-                if "TCN" not in args.MODEL_NAME:
-                    latent_space = latent_space.repeat(1, test_batch.shape[1], 1).to(args.device)
+                #if "TCN" not in args.MODEL_NAME:
+                    #latent_space = latent_space.repeat(1, test_batch.shape[1], 1).to(args.device)
 
                 reconstruction = args.decoder(latent_space)
                 reconstruction_errors.append(F.mse_loss(reconstruction, test_batch).item())
