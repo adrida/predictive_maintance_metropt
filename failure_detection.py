@@ -40,7 +40,9 @@ def failure_list_to_interval(cycle_dates, failures):
     failure_intervals = []
     for failure in failures:
         failure = sorted(failure)
-        failure_intervals.append(pd.Interval(cycle_dates[failure[0]][0], cycle_dates[failure[-1]][1], closed="both"))
+        # failure_intervals.append(pd.Interval(cycle_dates[failure[0]][0], cycle_dates[failure[-1]][1], closed="both"))
+        failure_intervals.append(pd.Interval(cycle_dates[failure[0]].left, cycle_dates[failure[-1]].right, closed="both"))
+
     return failure_intervals
 
 
@@ -100,9 +102,9 @@ train_chunks_to_intervals = map_cycles_to_intervals(train_intervals, training_ch
 test_chunks_to_intervals = map_cycles_to_intervals(test_intervals, test_chunk_dates)
 
 print("Mapped cycles to intervals")
-alpha = 0.05
+alpha = 0.5
 
-with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_analog_feats_4_2_30_3_1.0_3_32_2_0.001_0.001_18.pkl", "rb") as loss_file:
+with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_analog_feats_4_2_30_3_1.0_3_32_150_0.001_0.001_18.pkl", "rb") as loss_file:
     tl = pkl.load(loss_file)
     test_losses = tl["test"]
     train_losses = tl["train"]
@@ -124,13 +126,43 @@ print("Combined critic reconstruction losses ")
 anom = extreme_anomaly(combine_critic_reconstruction_train)
 print("Extreme anomalies deteced")
 binary_output = np.array(combine_critic_reconstruction > anom, dtype=int)
+for val in np.arange(0.5, 1.8,0.1):
+    wae_gan_output = np.array(simple_lowpass_filter(binary_output,val))
 
-wae_gan_output = np.array(simple_lowpass_filter(binary_output,alpha))
+    # print("Output consutrcuted... Loading failures detected")
+    print("Failures for alpha = ", val)
+    print_failures(test_intervals, wae_gan_output)
+    print("------------------------------------------")
+    # breakpoint()
 
-print("Output consutrcuted... Loading failures detected")
-print_failures(test_intervals, wae_gan_output)
-breakpoint()
+with open("results/final_chunks_complete_losses_WAE_LSTMDiscriminator_TCN_analog_feats_4_2_30_3_1.0_3_32_150_0.001_0.001_32.pkl", "rb") as loss_file:
+    tl = pkl.load(loss_file)
+    test_losses = tl["test"]
+    train_losses = tl["train"]
 
+median_train_losses = np.array([np.median(np.array(train_losses["reconstruction"])[tc]) for tc in train_chunks_to_intervals if len(tc) > 0])
+median_test_losses = np.array([np.median(np.array(test_losses["reconstruction"])[tc]) for tc in test_chunks_to_intervals if len(tc) > 0])
+
+median_train_critic = np.array([np.median(np.array(train_losses["critic"])[tc]) for tc in train_chunks_to_intervals if len(tc) > 0])
+median_test_critic = np.array([np.median(np.array(test_losses["critic"])[tc]) for tc in test_chunks_to_intervals if len(tc) > 0])
+
+combine_critic_reconstruction = np.abs(list(map(lambda x: np.nan_to_num(zscore(median_test_critic[:x], ddof=1)[-1]), 
+                                                range(1,len(median_test_critic)+1)))) * median_test_losses
+combine_critic_reconstruction_train = np.abs(list(map(lambda x: np.nan_to_num(zscore(median_train_critic[:x], ddof=1)[-1]), 
+                                                      range(1,len(median_train_critic)+1)))) * median_train_losses
+
+anom = extreme_anomaly(combine_critic_reconstruction_train)
+binary_output = np.array(combine_critic_reconstruction > anom, dtype=int)
+print("LSTM TCN")
+for val in np.arange(0.5, 1.8,0.1):
+    wae_gan_output = np.array(simple_lowpass_filter(binary_output,val))
+
+    # print("Output consutrcuted... Loading failures detected")
+
+    print("Failures for alpha = ", val)
+    print_failures(test_intervals, wae_gan_output)
+    print("------------------------------------------")
+    # breakpoint()
 # with open("results/final_chunks_complete_losses_AE_tcn_ae_analog_feats_4_8_6_7_100_0.001_64.pkl", "rb") as loss_file:
 #     tl = pkl.load(loss_file)
 #     test_losses = tl["test"]
