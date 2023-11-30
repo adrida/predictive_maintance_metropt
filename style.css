@@ -1,0 +1,9 @@
+.row {
+    display: flex;
+}
+.nine.columns {
+    width: 75%;
+}
+.three.columns {
+    width: 25%;
+}
